@@ -78,6 +78,15 @@ class Client(QMainWindow):
 		def toggler_3(self):
 			s.send(b'relay_3')
 
+		def toggler_4(self):
+			s.send(b'relay_4')
+
+		def toggler_5(self):
+			s.send(b'relay_5')
+
+		def toggler_6(self):
+			s.send(b'relay_6')
+
 		self.toggle_1 = QPushButton("Toggle_1", self)
 		self.toggle_1.resize(290, 170)
 		self.toggle_1.move(100, 70)
@@ -99,7 +108,27 @@ class Client(QMainWindow):
 		self.toggle_3.setFont(self.font5)
 		self.toggle_3.clicked.connect(toggler_3)
 
+		self.toggle_4 = QPushButton("Toggle_4", self)
+		self.toggle_4.resize(290, 170)
+		self.toggle_4.move(1000, 70)
+		self.toggle_4.setEnabled(True)
+		self.toggle_4.setFont(self.font5)
+		self.toggle_4.clicked.connect(toggler_4)
 
+		self.toggle_5 = QPushButton("Toggle_5", self)
+		self.toggle_5.resize(290, 170)
+		self.toggle_5.move(1300, 70)
+		self.toggle_5.setEnabled(True)
+		self.toggle_5.setFont(self.font5)
+		self.toggle_5.clicked.connect(toggler_5)
+
+		self.toggle_6 = QPushButton("Toggle_6", self)
+		self.toggle_6.resize(290, 170)
+		self.toggle_6.move(1600, 70)
+		self.toggle_6.setEnabled(True)
+		self.toggle_6.setFont(self.font5)
+		self.toggle_6.clicked.connect(toggler_6)
+		
 		def createButton(self, saction, smovex, smovey, sresizex, sresizey, senabled, sfontsize, sfunction):
 			#makes code smaller, all buttons in program
 			self.launchBtn = QtWidgets.QPushButton("Launch!", self)

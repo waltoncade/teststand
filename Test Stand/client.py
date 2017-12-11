@@ -18,6 +18,8 @@ class Client(QMainWindow):
 		self.client_settings = ClientSettings()
 		self.initUI()
 		self.MenuBar()
+		self.Labels()
+		self.Pictures()
 		self.Buttons()
 		self.show()
 
@@ -28,13 +30,20 @@ class Client(QMainWindow):
 		# Set window background color
 		self.setAutoFillBackground(True)
 		p = self.palette()
-		p.setColor(self.backgroundRole(), Qt.gray)
+		p.setColor(self.backgroundRole(), Qt.white)
 		self.setPalette(p)
 
+		server_IP = '192.168.1.132' #This is the IP of the ESB Pi. It is a static IP. 
+		port = 5000
+		BUFF = 1024
+		self.server_address = (server_IP,port)
+		#s = socket.create_connection(self.server_address,timeout = 1.5)
+
+
+	def Labels(self):
 
 		def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
 			# makes code smaller, all the labels in the program
-
 			slabel = QtWidgets.QLabel(self)
 			slabel.setText(stext)
 			slabel.move(smovex, smovey)
@@ -42,16 +51,40 @@ class Client(QMainWindow):
 			slabel.setFont(QtGui.QFont('Times', sfontsize, QtGui.QFont.Bold, storf))
 			slabel.setPalette(scolor)
 
-		def createPicture(self, spicture, smovex, smovey, sresizex, sresizey):
+	def Pictures(self):
+
+		def createPicture(self, spicture, sresizex, sresizey):
 			# makes code smaller, all the pictures in the program
 			# you have to save pictures to the pictures/ path in order to show
-
-			pix = QtWidgets.QLabel(self)
-			pix.setPixmap(QtGui.QPixmap('pictures/' + spicture))
-			pix.move(smovex, smovey)
+			pix = QLabel(self)
+			pix.setPixmap(QPixmap('pictures/' + spicture))
 			pix.resize(sresizex, sresizey)
 
+		self.stand = QLabel(self)
+		self.stand = createPicture(self,'stand.png',741,807)
+		#self.stand.move(365,50)
+		self.engine = createPicture(self,'Rocket_Engine.png',685,800,80,186)
+		self.engineHot = createPicture(self,'Rocket_Engine_Hot.png',685,800,80,0)
+		self.load_cell = createPicture(self,'loadcell.png',685,790,80,87)
+		self.tank1 = createPicture(self,'tank.png',450,50,171,711)
+		self.tank2 = createPicture(self,'tank.png',805,50,171,711)
+		#self.blue = createPicture(self,'blue.png',863,400,47,self.tank1zero)
+
 	def Buttons(self):
+
+		def createButton(self, stext, smovex, smovey, sresizex, sresizey, senabled, sfontsize, sfunction, sicon, siconx, sicony):
+			# makes code smaller, all the labels in the program
+
+			sbutton = QPushButton(stext, self)
+			sbutton.move(smovex, smovey)
+			sbutton.resize(sresizex, sresizey)
+			sbutton.setEnabled(senabled)
+			sbutton.setFont(sfontsize)
+			sbutton.clicked.connect(sfunction)
+			if stext == '':
+				sbutton.setIcon(QIcon("pictures/"+sicon))
+				sbutton.setIconSize(QSize(siconx, sicony))
+
 
 		#sets 4 different font sizes for the buttons created. Pick one.
 		self.font2 = QFont()
@@ -63,52 +96,9 @@ class Client(QMainWindow):
 		self.font5 = QFont()
 		self.font5.setPointSize(24)
 
-		server_IP = '192.168.1.132' #This is the IP of the ESB Pi. It is a static IP. 
-		port = 5000
-		BUFF = 1024
-		self.server_address = (server_IP,port)
-		s = socket.create_connection(self.server_address,timeout = 1.5)
-
-		def toggler_1(self):
-			s.send(b'relay_1')
-
-		def toggler_2(self):
-			s.send(b'relay_2')
-
-		def toggler_3(self):
-			s.send(b'relay_3')
-
-		self.toggle_1 = QPushButton("Toggle_1", self)
-		self.toggle_1.resize(290, 170)
-		self.toggle_1.move(100, 70)
-		self.toggle_1.setEnabled(True)
-		self.toggle_1.setFont(self.font5)
-		self.toggle_1.clicked.connect(toggler_1)
-
-		self.toggle_2 = QPushButton("Toggle_2", self)
-		self.toggle_2.resize(290, 170)
-		self.toggle_2.move(400, 70)
-		self.toggle_2.setEnabled(True)
-		self.toggle_2.setFont(self.font5)
-		self.toggle_2.clicked.connect(toggler_2)
-
-		self.toggle_3 = QPushButton("Toggle_3", self)
-		self.toggle_3.resize(290, 170)
-		self.toggle_3.move(700, 70)
-		self.toggle_3.setEnabled(True)
-		self.toggle_3.setFont(self.font5)
-		self.toggle_3.clicked.connect(toggler_3)
-
-
-		def createButton(self, saction, smovex, smovey, sresizex, sresizey, senabled, sfontsize, sfunction):
-			#makes code smaller, all buttons in program
-			self.launchBtn = QtWidgets.QPushButton("Launch!", self)
-			self.launchBtn.resize(290, 170)
-			self.launchBtn.move(5, 70)
-			self.launchBtn.setEnabled(False)
-			self.launchBtn.setFont(self.font5)
-			self.launchBtn.clicked.connect(self.launch_app)
-
+		toggle_1 = createButton(self,'',100,70,100,100,True,self.font5,self.toggler_1,'icon.png',100,100)
+		#toggle_2 = createButton(self,'Toggle_2',400,70,290,170,True,self.font5,self.toggler_2,'',100,100)
+		#toggle_3 = createButton(self,'Toggle_3',700,70,290,170,True,self.font5,self.toggler_3,'icon.png',100,100)
 
 
 
@@ -146,6 +136,16 @@ class Client(QMainWindow):
 		aboutMenu.addAction(helpAction)
 		aboutMenu.addAction(aboutAction)
 
+	def toggler_1(self):
+		#s.send(b'relay_1')
+		self.switch_labels("engine")
+
+	def toggler_2(self):
+		s.send(b'relay_2')
+
+	def toggler_3(self):
+		s.send(b'relay_3')
+
 	def close_app(self):
 		# exits GUI
 		#self.logTextBox.append(">  Exiting...{}".format(time.strftime("\t-           (%H:%M:%S)", time.localtime())))
@@ -158,6 +158,20 @@ class Client(QMainWindow):
 		else:
 		    pass
 		    #self.logTextBox.append("> Exit Stopped{}".format(time.strftime("\t-         (%H:%M:%S)", time.localtime())))
+
+	def switch_labels(self,data):
+
+		def editPicture(self, pix, smovex, smovey, sresizex, sresizey):
+			# makes code smaller, all the pictures in the program
+			# you have to save pictures to the pictures/ path in order to show
+			#pix.move(smovex, smovey)
+			#pix.resize(sresizex, sresizey)
+			print(pix)
+
+		if data == "engine":
+			#editPicture(self,self.engineHot,685,800,80,20)
+			editPicture(self,self.whutt,685,800,80,100)
+			print("Uh oh")
 
 
 class ClientSettings(QWidget):

@@ -10,18 +10,20 @@ import subprocess
 class Client(QMainWindow):
 	def __init__(self):
 		super().__init__()
-		self.left = 260
-		self.top = 40
-		self.width = 1500
-		self.height = 1000
-		self.setGeometry(self.left,self.top,self.width,self.height)
+		self.setWindowState(Qt.WindowMaximized)
+		self.yGeom = QDesktopWidget().height()
+		self.xGeom = QDesktopWidget().width()
+		self.xScalar = (self.xGeom/1920)*2
+		self.xCenter = self.xGeom/self.xScalar
+		self.yCenter = self.yGeom/2
 		self.client_settings = ClientSettings()
 		self.initUI()
 		self.MenuBar()
-		self.Labels()
 		self.Pictures()
+		self.Labels()
 		self.Buttons()
 		self.show()
+
 
 	def initUI(self):
 		self.title = 'Test Stand'
@@ -33,42 +35,90 @@ class Client(QMainWindow):
 		p.setColor(self.backgroundRole(), Qt.white)
 		self.setPalette(p)
 
+		# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		# sets up the logging text box in the console
+
+		self.logTextBox = QTextBrowser(self)
+		self.font = QFont()
+		self.font.setPointSize(12)
+		self.logTextBox.setFont(self.font)
+		self.logTextBox.setReadOnly(True)
+		self.logTextBox.resize(400, 974)
+		self.logTextBox.move(self.xCenter+560, 75)
+		self.logTextBox.append("  =========Action Log=========")
+
+		#Centers of Certain Objects, such as the test stand picture.
+		self.testStandCenter = self.xCenter -100
+		self.testStandDepth = self.yCenter - 450
+
+		#Used to animate the Tanks, tough because the height function changes from the center of the picture.
+		self.engineInit = 0
+		self.engineInit_Move = 0
+		self.tank_1_Init = 0
+		self.tank_1_Init_Move = 0
+		self.tank_2_Init = 0
+		self.tank_2_Init_Move = 0
+
 		server_IP = '192.168.1.132' #This is the IP of the ESB Pi. It is a static IP. 
 		port = 5000
 		BUFF = 1024
 		self.server_address = (server_IP,port)
 		#s = socket.create_connection(self.server_address,timeout = 1.5)
 
+		#Initializing variables that will be used later in the program
+		self.connection_status = False
+
 
 	def Labels(self):
 
+		self.palettered = QPalette()
+		self.palettered.setColor(QPalette.Foreground, Qt.red)
+
+		self.paletteblack = QPalette()
+		self.paletteblack.setColor(QPalette.Foreground, Qt.black)
+
+		self.paletteblue = QPalette()
+		self.paletteblue.setColor(QPalette.Foreground, Qt.blue)
+
 		def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
 			# makes code smaller, all the labels in the program
-			slabel = QtWidgets.QLabel(self)
+			slabel = QLabel(self)
 			slabel.setText(stext)
 			slabel.move(smovex, smovey)
 			slabel.resize(sresizex, sresizey)
-			slabel.setFont(QtGui.QFont('Times', sfontsize, QtGui.QFont.Bold, storf))
+			slabel.setFont(QFont('Times', sfontsize, QFont.Bold, storf))
 			slabel.setPalette(scolor)
+			return slabel
+
+		self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT',0,25,500,50,20,True,self.paletteblack)
+		self.teststandlabel = createLabel(self, 'TEST STAND',0,73,300,50,20,True,self.paletteblack)
 
 	def Pictures(self):
 
-		def createPicture(self, spicture, sresizex, sresizey):
+		def createPicture(self, spicture, smovex, smovey, sresizex, sresizey):
 			# makes code smaller, all the pictures in the program
 			# you have to save pictures to the pictures/ path in order to show
 			pix = QLabel(self)
 			pix.setPixmap(QPixmap('pictures/' + spicture))
 			pix.resize(sresizex, sresizey)
+			pix.move(smovex,smovey)
+			return pix
 
-		self.stand = QLabel(self)
-		self.stand = createPicture(self,'stand.png',741,807)
-		#self.stand.move(365,50)
-		self.engine = createPicture(self,'Rocket_Engine.png',685,800,80,186)
-		self.engineHot = createPicture(self,'Rocket_Engine_Hot.png',685,800,80,0)
-		self.load_cell = createPicture(self,'loadcell.png',685,790,80,87)
-		self.tank1 = createPicture(self,'tank.png',450,50,171,711)
-		self.tank2 = createPicture(self,'tank.png',805,50,171,711)
-		#self.blue = createPicture(self,'blue.png',863,400,47,self.tank1zero)
+		self.stand = createPicture(self,'stand.png',self.testStandCenter-350,self.testStandDepth,741,807)
+		self.engine = createPicture(self,'Rocket_Engine.png',self.testStandCenter-40,self.testStandDepth + 750,80,186)
+		self.engineHot = createPicture(self,'Rocket_Engine_Hot.png',self.testStandCenter-40,self.testStandDepth+843,80,0)
+		self.load_cell = createPicture(self,'loadcell.png',self.testStandCenter-40,self.testStandDepth+740,80,87)
+		self.tank1 = createPicture(self,'tank.png',self.testStandCenter-266,self.testStandDepth,171,711)
+		self.tank2 = createPicture(self,'tank.png',self.testStandCenter+90,self.testStandDepth,171,711)
+		self.blue = createPicture(self,'blue.png',self.testStandCenter-203,718,47,0)
+		self.purple = createPicture(self,'purple.png',self.testStandCenter+90,718,47,0)
+		self.redtopborder = createPicture(self,'red.png',0,25,1980,50)
+		self.rocketlogo = createPicture(self,'rp.png',self.testStandCenter-87.5,self.testStandDepth+95,175,91)
+		self.box = createPicture(self,'box.png',0,73,215,50)
+		self.loxgauge = createPicture(self,'gauge.png',self.testStandCenter-570,self.testStandDepth+7,300,300)
+		self.ch4gauge = createPicture(self,'gauge.png',self.testStandCenter+260,self.testStandDepth+7,300,300)
+		self.connectionsymbol = createPicture(self,'pingred.png',self.testStandCenter+40,self.testStandDepth,80,80)
 
 	def Buttons(self):
 
@@ -84,6 +134,7 @@ class Client(QMainWindow):
 			if stext == '':
 				sbutton.setIcon(QIcon("pictures/"+sicon))
 				sbutton.setIconSize(QSize(siconx, sicony))
+			return sbutton
 
 
 		#sets 4 different font sizes for the buttons created. Pick one.
@@ -96,10 +147,39 @@ class Client(QMainWindow):
 		self.font5 = QFont()
 		self.font5.setPointSize(24)
 
-		toggle_1 = createButton(self,'',100,70,100,100,True,self.font5,self.toggler_1,'icon.png',100,100)
-		#toggle_2 = createButton(self,'Toggle_2',400,70,290,170,True,self.font5,self.toggler_2,'',100,100)
-		#toggle_3 = createButton(self,'Toggle_3',700,70,290,170,True,self.font5,self.toggler_3,'icon.png',100,100)
+		self.connectbtn = createButton(self,'Connect',self.testStandCenter-120,self.testStandDepth+23,150,40,True,self.font5,self.connect_app,'icon.png',100,100)
+		self.toggle_1 = createButton(self,'',100,200,100,100,True,self.font5,self.toggler_1,'icon.png',100,100)
+		self.toggle_2 = createButton(self,'',100,320,100,100,True,self.font5,self.toggler_2,'icon.png',100,100)
+		self.toggle_3 = createButton(self,'',100,500,100,100,True,self.font5,self.toggler_3,'icon.png',100,100)
+		self.toggle_4 = createButton(self,'',100,630,100,100,True,self.font5,self.toggler_4,'icon.png',100,100)
+		self.toggle_5 = createButton(self,'',220,350,100,100,True,self.font5,self.toggler_5,'icon.png',100,100)
+		self.toggle_6 = createButton(self,'',220,480,100,100,True,self.font5,self.toggler_6,'icon.png',100,100)
+		#toggle_5 = createButton(self,'Toggle_2',400,70,290,170,True,self.font5,self.toggler_2,'',100,100)
+		#toggle_6 = createButton(self,'Toggle_3',700,70,290,170,True,self.font5,self.toggler_3,'icon.png',100,100)
 
+		#self.toggle_1.setStyleSheet("background-color: white")
+
+	def paintEvent(self, e):
+
+		# sets up the "paint brush" in order to use the drawLines function
+
+		qp = QPainter()
+		qp.begin(self)
+		self.drawLines(qp)
+		qp.end()
+
+	def drawLines(self, qp):
+
+		# draws the lines found in the program
+
+		pen = QPen(Qt.black, 4, Qt.SolidLine)
+		qp.setPen(pen)
+		qp.drawLine(self.testStandCenter+178, self.testStandDepth+30, self.testStandCenter+210, self.testStandDepth+10)
+		qp.drawLine(self.testStandCenter+210, self.testStandDepth+10, self.testStandCenter+420, self.testStandDepth+10)
+		qp.drawLine(self.testStandCenter-178, self.testStandDepth+30, self.testStandCenter-210, self.testStandDepth+10)
+		qp.drawLine(self.testStandCenter-210, self.testStandDepth+10, self.testStandCenter-420, self.testStandDepth+10)
+		#qp.drawLine(self.testStandCenter+178, self.testStandDepth+29, 950, 100)
+		#qp.drawLine(307.5, 260, 307.5, 730)
 
 
 	def MenuBar(self):
@@ -138,41 +218,109 @@ class Client(QMainWindow):
 
 	def toggler_1(self):
 		#s.send(b'relay_1')
-		self.switch_labels("engine")
+		self.switch_labels("engine_up")
 
 	def toggler_2(self):
-		s.send(b'relay_2')
+		#s.send(b'relay_2')
+		self.switch_labels("engine_down")
 
 	def toggler_3(self):
-		s.send(b'relay_3')
+		#s.send(b'relay_3')
+		self.switch_labels("tank_1_up")
+
+	def toggler_4(self):
+		#s.send(b'relay_3')
+		self.switch_labels("tank_1_down")
+
+	def toggler_5(self):
+		#s.send(b'relay_3')
+		self.switch_labels("tank_2_up")
+
+	def toggler_6(self):
+		#s.send(b'relay_3')
+		self.switch_labels("tank_2_down")
+
+	def connect_app(self):
+
+		self.logTextBox.append("  >  Connecting...{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+
+		try:
+			self.s = socket.create_connection(self.server_address,timeout = 1.5)
+			QMessageBox.information(self, 'Connection Results', 'Socket Successfully Bound.\nClick "Read Statuses " to start')
+			self.connection_status = True
+			self.logTextBox.append("  >  Connected{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			self.connectionsymbol.setPixmap(QPixmap('pictures/pinggreen.png'))
+			#logger.debug("Connection Successful at {}".format(time.asctime()))
+
+		except socket.error as e:
+			#logger.debug("Connection Unsuccessful at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.logTextBox.append("  >  Connection Unsuccessful{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			reply = QMessageBox.critical(self, "Connection Results", "Couldn't connect to {} at {}. Error is: \n{}.\nMake sure server is listening.".format(self.server_address[0],self.server_address[1],e),
+													QMessageBox.Cancel | QMessageBox.Retry)
+			if reply == QMessageBox.Cancel:
+				self.logTextBox.append("  >  Connection Canceled{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+			elif reply == QMessageBox.Retry:
+				self.logTextBox.append("  >  Retrying Connection{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+				self.connect_app()
+
 
 	def close_app(self):
 		# exits GUI
 		#self.logTextBox.append(">  Exiting...{}".format(time.strftime("\t-           (%H:%M:%S)", time.localtime())))
 		choice = QMessageBox.question(self, "Confirmation.", "Are you sure you want to exit?",
-		                                        QMessageBox.Yes | QMessageBox.No)
+												QMessageBox.Yes | QMessageBox.No)
 		if choice == QMessageBox.Yes:
-		    print("System Closed")
-		    logger.debug("Application Exited at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
-		    sys.exit()
+			print("System Closed")
+			#logger.debug("Application Exited at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			sys.exit()
 		else:
-		    pass
-		    #self.logTextBox.append("> Exit Stopped{}".format(time.strftime("\t-         (%H:%M:%S)", time.localtime())))
+			pass
+			#self.logTextBox.append("> Exit Stopped{}".format(time.strftime("\t-         (%H:%M:%S)", time.localtime())))
 
 	def switch_labels(self,data):
 
-		def editPicture(self, pix, smovex, smovey, sresizex, sresizey):
-			# makes code smaller, all the pictures in the program
-			# you have to save pictures to the pictures/ path in order to show
-			#pix.move(smovex, smovey)
-			#pix.resize(sresizex, sresizey)
-			print(pix)
+		if data == "engine_up" and self.engineInit <= 186:
+			self.engineInit += 9.3
+			self.engineInit_Move += 9.3/2
+			self.engineHot.move(self.testStandCenter-40,self.testStandDepth+843-self.engineInit_Move)
+			self.engineHot.resize(80, self.engineInit)
+			#self.engineHot.move(685, engineInit_move)
+		elif data == "engine_down" and self.engineInit >= 9.3:
+			self.engineInit -= 9.3
+			self.engineInit_Move -= 9.3/2
+			self.engineHot.resize(80, self.engineInit)
+			self.engineHot.move(self.testStandCenter-40,self.testStandDepth+843-self.engineInit_Move)
+		elif data == "tank_1_up" and self.tank_1_Init <= 1212:
+			if self.tank_1_Init == 1212:
+				self.blue.setPixmap(QPixmap('pictures/green.png'))
+			self.tank_1_Init += 12
+			self.tank_1_Init_Move += 12/2
+			self.blue.move(self.testStandCenter-203, self.testStandDepth+668-self.tank_1_Init_Move)
+			self.blue.resize(47, self.tank_1_Init)
+		elif data == "tank_1_down" and self.tank_1_Init >= 12:
+			if self.tank_1_Init <= 1224:
+				self.blue.setPixmap(QPixmap('pictures/blue.png'))
+			self.tank_1_Init -= 12
+			self.tank_1_Init_Move -= 12/2
+			self.blue.move(self.testStandCenter-203, self.testStandDepth+668-self.tank_1_Init_Move)
+			self.blue.resize(47, self.tank_1_Init)
+		elif data == "tank_2_up" and self.tank_2_Init <= 1212:
+			if self.tank_2_Init == 1212:
+				self.purple.setPixmap(QPixmap('pictures/green.png'))
+			self.tank_2_Init += 12
+			self.tank_2_Init_Move += 12/2
+			self.purple.move(self.testStandCenter+153, self.testStandDepth+668-self.tank_2_Init_Move)
+			self.purple.resize(47, self.tank_2_Init)
+		elif data == "tank_2_down" and self.tank_2_Init >= 12:
+			if self.tank_2_Init <= 1224:
+				self.purple.setPixmap(QPixmap('pictures/purple.png'))
+			self.tank_2_Init -= 12
+			self.tank_2_Init_Move -= 12/2
+			self.purple.move(self.testStandCenter+153, self.testStandDepth+668-self.tank_2_Init_Move)
+			self.purple.resize(47, self.tank_2_Init)
 
-		if data == "engine":
-			#editPicture(self,self.engineHot,685,800,80,20)
-			editPicture(self,self.whutt,685,800,80,100)
-			print("Uh oh")
 
+#self.blue = createPicture(self,'blue.png',self.testStandCenter-203,118,47,0)
 
 class ClientSettings(QWidget):
 	def __init__(self):

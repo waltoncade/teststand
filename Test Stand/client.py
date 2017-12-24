@@ -1,10 +1,16 @@
 import sys
+import os
 import time
 import logging
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import socket 
+import matplotlib.pyplot as plt
+from Phidget22.Devices.VoltageRatioInput import *
+from Phidget22.PhidgetException import *
+from Phidget22.Phidget import *
+from Phidget22.Net import *
+import socket
 import subprocess
 
 class Client(QMainWindow):
@@ -49,7 +55,7 @@ class Client(QMainWindow):
 		self.logTextBox.append("  =========Action Log=========")
 
 		#Centers of Certain Objects, such as the test stand picture.
-		self.testStandCenter = self.xCenter -100
+		self.testStandCenter = self.xCenter -50
 		self.testStandDepth = self.yCenter - 450
 
 		#Used to animate the Tanks, tough because the height function changes from the center of the picture.
@@ -68,6 +74,8 @@ class Client(QMainWindow):
 
 		#Initializing variables that will be used later in the program
 		self.connection_status = False
+		self.phidget_status = False
+		self.loadcelltare = False
 
 
 	def Labels(self):
@@ -93,6 +101,7 @@ class Client(QMainWindow):
 
 		self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT',0,25,500,50,20,True,self.paletteblack)
 		self.teststandlabel = createLabel(self, 'TEST STAND',0,73,300,50,20,True,self.paletteblack)
+		self.loadcelllabel = createLabel(self, '0',self.testStandCenter+150,self.testStandDepth+800,300,50,20,True,self.paletteblack)
 
 	def Pictures(self):
 
@@ -148,16 +157,87 @@ class Client(QMainWindow):
 		self.font5.setPointSize(24)
 
 		self.connectbtn = createButton(self,'Connect',self.testStandCenter-120,self.testStandDepth+23,150,40,True,self.font5,self.connect_app,'icon.png',100,100)
-		self.toggle_1 = createButton(self,'',100,200,100,100,True,self.font5,self.toggler_1,'icon.png',100,100)
-		self.toggle_2 = createButton(self,'',100,320,100,100,True,self.font5,self.toggler_2,'icon.png',100,100)
-		self.toggle_3 = createButton(self,'',100,500,100,100,True,self.font5,self.toggler_3,'icon.png',100,100)
-		self.toggle_4 = createButton(self,'',100,630,100,100,True,self.font5,self.toggler_4,'icon.png',100,100)
-		self.toggle_5 = createButton(self,'',220,350,100,100,True,self.font5,self.toggler_5,'icon.png',100,100)
-		self.toggle_6 = createButton(self,'',220,480,100,100,True,self.font5,self.toggler_6,'icon.png',100,100)
-		#toggle_5 = createButton(self,'Toggle_2',400,70,290,170,True,self.font5,self.toggler_2,'',100,100)
-		#toggle_6 = createButton(self,'Toggle_3',700,70,290,170,True,self.font5,self.toggler_3,'icon.png',100,100)
+		self.firebtn = createButton(self,'Fire!',5,130,285,90,True,self.font5,self.connect_app,'icon.png',100,100)
+		self.loadcellbtn = createButton(self,'Start Load Cell',10,300,270,70,True,self.font5,self.loadcell_app,'icon.png',100,100)
+		self.loadcelltarebtn = createButton(self,'Tare Load Cell',10,400,270,70,True,self.font5,self.loadcelltare_app,'icon.png',100,100)
 
-		#self.toggle_1.setStyleSheet("background-color: white")
+
+	def loadcelltare_app(self):
+		try:
+			self.loadcelltare = True
+			self.infotimer.stop()
+			self.loadcell_app()
+		except:
+			self.logTextBox.append("  >  Cannot Tare a Load Cell That is Not Running{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+
+	def loadcell_app(self):
+
+		def VoltageRatioInputAttached(e):
+			print("Attached!")
+			self.phidget_status = True
+
+		def VoltageRatioInputDetached(e):
+			print("Detached") 
+			self.phidget_status = False
+
+		def VoltageRatioChangeHandler(e, voltageRatio):
+			voltageRatio = (877420*voltageRatio)
+			voltageZero.append(voltageRatio)
+			print("VoltageRatio: %f" % voltageRatio)
+
+		def ErrorEvent(e, eCode, description):
+			print("Error %i : %s" % (eCode, description))
+		if self.phidget_status == False or self.loadcelltare == True:
+			try:
+				self.ch = VoltageRatioInput()
+				self.ch.setOnErrorHandler(ErrorEvent)
+				self.ch.setOnAttachHandler(VoltageRatioInputAttached)
+				self.ch.setOnVoltageRatioChangeHandler(VoltageRatioChangeHandler)
+				self.ch.openWaitForAttachment(5000)
+				self.ch.setBridgeEnabled(1)
+				voltageZero = []
+				voltlist = []
+
+				time.sleep(5)
+				self.voltavg = float(sum(voltageZero)) / float(len(voltageZero))
+
+				self.loadcelltare = False
+				self.infotimer = QTimer()
+				self.infotimer.timeout.connect(self.loadcell)
+				self.infotimer.setInterval(50)
+				self.infotimer.start()
+			except PhidgetException as e:
+				print("Phidget Exception %i: %s" % (e.code, e.details))
+				self.loadcelllabel.setText("Error")
+				self.logTextBox.append("  >  Phidget Not Found{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+				reply = QMessageBox.critical(self, "Phidget Results", "Couldn't connect to Phidget. Error is: \n{}: {}.\nMake sure Phidget is attached.".format(e.code, e.details),
+														QMessageBox.Cancel | QMessageBox.Retry)
+				if reply == QMessageBox.Cancel:
+					self.logTextBox.append("  >  Phidget Canceled{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+				elif reply == QMessageBox.Retry:
+					self.logTextBox.append("  >  Retrying Phidget{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+					self.loadcell_app()
+		else:
+			self.logTextBox.append("  >  Phidget already attached{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+
+	def loadcell(self):
+		def VoltageRatioInputAttached(e):
+			print("Attached!")
+			self.phidget_status = True
+
+		def VoltageRatioInputDetached(e):
+			print("Detached") 
+			self.phidget_status = False
+
+		def VoltageRatioChangeHandler1(e, voltageRatio):
+			voltageRatio = (877420*voltageRatio - self.voltavg)
+			voltlist.append(voltageRatio)
+			print("VoltageRatio: %f" % voltageRatio)
+			self.loadcelllabel.setText(str(voltageRatio))
+
+		self.ch.setOnDetachHandler(VoltageRatioInputDetached)
+		self.ch.setOnAttachHandler(VoltageRatioInputAttached)
+		self.ch.setOnVoltageRatioChangeHandler(VoltageRatioChangeHandler1)
 
 	def paintEvent(self, e):
 
@@ -216,30 +296,6 @@ class Client(QMainWindow):
 		aboutMenu.addAction(helpAction)
 		aboutMenu.addAction(aboutAction)
 
-	def toggler_1(self):
-		#s.send(b'relay_1')
-		self.switch_labels("engine_up")
-
-	def toggler_2(self):
-		#s.send(b'relay_2')
-		self.switch_labels("engine_down")
-
-	def toggler_3(self):
-		#s.send(b'relay_3')
-		self.switch_labels("tank_1_up")
-
-	def toggler_4(self):
-		#s.send(b'relay_3')
-		self.switch_labels("tank_1_down")
-
-	def toggler_5(self):
-		#s.send(b'relay_3')
-		self.switch_labels("tank_2_up")
-
-	def toggler_6(self):
-		#s.send(b'relay_3')
-		self.switch_labels("tank_2_down")
-
 	def connect_app(self):
 
 		self.logTextBox.append("  >  Connecting...{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
@@ -277,7 +333,7 @@ class Client(QMainWindow):
 			pass
 			#self.logTextBox.append("> Exit Stopped{}".format(time.strftime("\t-         (%H:%M:%S)", time.localtime())))
 
-	def switch_labels(self,data):
+	def animations(self,data):
 
 		if data == "engine_up" and self.engineInit <= 186:
 			self.engineInit += 9.3
@@ -319,8 +375,6 @@ class Client(QMainWindow):
 			self.purple.move(self.testStandCenter+153, self.testStandDepth+668-self.tank_2_Init_Move)
 			self.purple.resize(47, self.tank_2_Init)
 
-
-#self.blue = createPicture(self,'blue.png',self.testStandCenter-203,118,47,0)
 
 class ClientSettings(QWidget):
 	def __init__(self):
@@ -365,3 +419,42 @@ if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	ex = Client()
 	sys.exit(app.exec_())
+
+
+
+
+
+'''self.toggle_1 = createButton(self,'',100,200,100,100,True,self.font5,self.toggler_1,'icon.png',100,100)
+		self.toggle_2 = createButton(self,'',100,320,100,100,True,self.font5,self.toggler_2,'icon.png',100,100)
+		self.toggle_3 = createButton(self,'',100,500,100,100,True,self.font5,self.toggler_3,'icon.png',100,100)
+		self.toggle_4 = createButton(self,'',100,630,100,100,True,self.font5,self.toggler_4,'icon.png',100,100)
+		self.toggle_5 = createButton(self,'',220,350,100,100,True,self.font5,self.toggler_5,'icon.png',100,100)
+		self.toggle_6 = createButton(self,'',220,480,100,100,True,self.font5,self.toggler_6,'icon.png',100,100)
+		#toggle_5 = createButton(self,'Toggle_2',400,70,290,170,True,self.font5,self.toggler_2,'',100,100)
+		#toggle_6 = createButton(self,'Toggle_3',700,70,290,170,True,self.font5,self.toggler_3,'icon.png',100,100)
+
+		#self.toggle_1.setStyleSheet("background-color: white")
+
+	def toggler_1(self):
+		#s.send(b'relay_1')
+		self.animations("engine_up")
+
+	def toggler_2(self):
+		#s.send(b'relay_2')
+		self.animations("engine_down")
+
+	def toggler_3(self):
+		#s.send(b'relay_3')
+		self.animations("tank_1_up")
+
+	def toggler_4(self):
+		#s.send(b'relay_3')
+		self.animations("tank_1_down")
+
+	def toggler_5(self):
+		#s.send(b'relay_3')
+		self.animations("tank_2_up")
+
+	def toggler_6(self):
+		#s.send(b'relay_3')
+		self.animations("tank_2_down")'''

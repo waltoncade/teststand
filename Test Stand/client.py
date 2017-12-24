@@ -196,7 +196,6 @@ class Client(QMainWindow):
 				self.ch.openWaitForAttachment(5000)
 				self.ch.setBridgeEnabled(1)
 				voltageZero = []
-				voltlist = []
 
 				time.sleep(5)
 				self.voltavg = float(sum(voltageZero)) / float(len(voltageZero))
@@ -231,6 +230,7 @@ class Client(QMainWindow):
 
 		def VoltageRatioChangeHandler1(e, voltageRatio):
 			voltageRatio = (877420*voltageRatio - self.voltavg)
+			voltlist = []
 			voltlist.append(voltageRatio)
 			print("VoltageRatio: %f" % voltageRatio)
 			self.loadcelllabel.setText(str(voltageRatio))

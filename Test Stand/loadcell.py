@@ -51,4 +51,4 @@ def VoltageRatioChangeHandler1(e, voltageRatio):
 
 ch.setOnDetachHandler(VoltageRatioInputDetached)
 ch.setOnVoltageRatioChangeHandler(VoltageRatioChangeHandler1)
-
+time.sleep(10)

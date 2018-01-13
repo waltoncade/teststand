@@ -80,9 +80,27 @@ def relay5_on():
 	return
 
 def relay6_on():
-	RELAY.relayON(1,6)
+	RELAY.relayON(0,6)
 	print("Relay 6 ON")
 	client.publish(TOPIC_2,b'R6ON')
+	return
+
+def relay7_on():
+	RELAY.relayON(1,1)
+	print("Relay 7 ON")
+	client.publish(TOPIC_2,b'R7ON')
+	return
+
+def relay8_on():
+	RELAY.relayON(1,2)
+	print("Relay 8 ON")
+	client.publish(TOPIC_2,b'R8ON')
+	return
+
+def relay9_on():
+	RELAY.relayON(1,3)
+	print("Relay 9 ON")
+	client.publish(TOPIC_2,b'R9ON')
 	return
 
 def relay1_off():
@@ -119,6 +137,24 @@ def relay6_off():
 	RELAY.relayOFF(1,6)
 	print("Relay 6 OFF")
 	client.publish(TOPIC_2,b'R6OFF')
+	return
+
+def relay7_off():
+	RELAY.relayOFF(1,1)
+	print("Relay 7 OFF")
+	client.publish(TOPIC_2,b'R7OFF')
+	return
+
+def relay8_off():
+	RELAY.relayOFF(1,2)
+	print("Relay 8 OFF")
+	client.publish(TOPIC_2,b'R8OFF')
+	return
+
+def relay9_off():
+	RELAY.relayOFF(1,3)
+	print("Relay 9 OFF")
+	client.publish(TOPIC_2,b'R9OFF')
 	return
 
 
@@ -160,6 +196,18 @@ def calldata(data):
 		print ("Received data: ",data)
 		relay6_on()
 
+	elif 'relay7_open' in data:
+		print ("Received data: ",data)
+		relay7_on()
+
+	elif 'relay8_open' in data:
+		print ("Received data: ",data)
+		relay8_on()
+
+	elif 'relay9_open' in data:
+		print ("Received data: ",data)
+		relay9_on()
+
 	elif 'relay1_close' in data:
 		print ("Received data: ",data)
 		relay1_off()
@@ -183,5 +231,17 @@ def calldata(data):
 	elif 'relay6_close' in data:
 		print ("Received data: ",data)
 		relay6_off()
+
+	elif 'relay7_close' in data:
+		print ("Received data: ",data)
+		relay7_off()
+
+	elif 'relay8_close' in data:
+		print ("Received data: ",data)
+		relay8_off()
+
+	elif 'relay9_close' in data:
+		print ("Received data: ",data)
+		relay9_off()
 
 client.loop_forever()

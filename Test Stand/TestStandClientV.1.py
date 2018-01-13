@@ -60,8 +60,8 @@ class Client(QMainWindow):
 		self.logTextBox.append("  =========Action Log=========")
 
 		#Centers of Certain Objects, such as the test stand picture.
-		self.testStandCenter = self.xCenter -50
-		self.testStandDepth = self.yCenter - 450
+		self.testStandCenter = self.xCenter +290
+		self.testStandDepth = self.yCenter - 480
 
 		#Used to animate the Tanks, tough because the height function changes from the center of the picture.
 		self.engineInit = 0
@@ -107,6 +107,8 @@ class Client(QMainWindow):
 		self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT',0,25,500,50,20,True,self.paletteblack)
 		self.teststandlabel = createLabel(self, 'TEST STAND',0,73,300,50,20,True,self.paletteblack)
 		self.loadcelllabel = createLabel(self, '0',self.testStandCenter+150,self.testStandDepth+800,300,50,20,True,self.paletteblack)
+		self.valves = createLabel(self, 'Valves:',235,375,300,50,20,False,self.paletteblack)
+		self.breakwire = createLabel(self, 'BreakWire Reading: ',300,300,400,50,20,False,self.paletteblack)
 
 	def Pictures(self):
 
@@ -130,9 +132,9 @@ class Client(QMainWindow):
 		self.redtopborder = createPicture(self,'red.png',0,25,1980,50)
 		self.rocketlogo = createPicture(self,'rp.png',self.testStandCenter-87.5,self.testStandDepth+95,175,91)
 		self.box = createPicture(self,'box.png',0,73,215,50)
-		self.loxgauge = createPicture(self,'loxgauge.png',self.testStandCenter-570,self.testStandDepth+7,300,300)
-		self.ch4gauge = createPicture(self,'kerogauge.png',self.testStandCenter+260,self.testStandDepth+7,300,300)
-		self.heliumgauge = createPicture(self,'heliumgauge2.png',self.testStandCenter+260,self.testStandDepth+350,300,300)
+		#self.loxgauge = createPicture(self,'loxgauge.png',self.testStandCenter-570,self.testStandDepth+7,300,300)
+		#self.ch4gauge = createPicture(self,'kerogauge.png',self.testStandCenter+260,self.testStandDepth+7,300,300)
+		#self.heliumgauge = createPicture(self,'heliumgauge2.png',self.testStandCenter+260,self.testStandDepth+350,300,300)
 		self.connectionsymbol = createPicture(self,'pingred.png',self.testStandCenter+40,self.testStandDepth,80,80)
 
 	def Buttons(self):
@@ -166,18 +168,24 @@ class Client(QMainWindow):
 		self.firebtn = createButton(self,'Fire!',5,130,285,90,True,self.font5,self.connect_app,'icon.png',100,100)
 		self.loadcellbtn = createButton(self,'Start Load Cell',5,220,270,70,True,self.font5,self.loadcell_app,'icon.png',100,100)
 		self.loadcelltarebtn = createButton(self,'Tare Load Cell',5,290,270,70,True,self.font5,self.loadcelltare_app,'icon.png',100,100)
-		self.so1btn = createButton(self,'Solenoid 1 Open',20,575,270,70,True,self.font2,self.so1_app,'icon.png',100,100)
-		self.so2btn = createButton(self,'Solenoid 2 Open',20,655,270,70,True,self.font2,self.so2_app,'icon.png',100,100)
-		self.so3btn = createButton(self,'Solenoid 3 Open',20,735,270,70,True,self.font2,self.so3_app,'icon.png',100,100)
-		self.so4btn = createButton(self,'Solenoid 4 Open',20,815,270,70,True,self.font2,self.so4_app,'icon.png',100,100)
-		self.so5btn = createButton(self,'Solenoid 5 Open',20,895,270,70,True,self.font2,self.so5_app,'icon.png',100,100)
-		self.so6btn = createButton(self,'Solenoid 6 Open',20,975,270,70,True,self.font2,self.so6_app,'icon.png',100,100)
-		self.sc1btn = createButton(self,'Solenoid 1 Close',300,575,270,70,False,self.font2,self.sc1_app,'icon.png',100,100)
-		self.sc2btn = createButton(self,'Solenoid 2 Close',300,655,270,70,False,self.font2,self.sc2_app,'icon.png',100,100)
-		self.sc3btn = createButton(self,'Solenoid 3 Close',300,735,270,70,False,self.font2,self.sc3_app,'icon.png',100,100)
-		self.sc4btn = createButton(self,'Solenoid 4 Close',300,815,270,70,False,self.font2,self.sc4_app,'icon.png',100,100)
-		self.sc5btn = createButton(self,'Solenoid 5 Close',300,895,270,70,False,self.font2,self.sc5_app,'icon.png',100,100)
-		self.sc6btn = createButton(self,'Solenoid 6 Close',300,975,270,70,False,self.font2,self.sc6_app,'icon.png',100,100)
+		self.so8btn = createButton(self,'Solenoid 8 Open',360,130,270,70,True,self.font2,self.so8_app,'icon.png',100,100)
+		self.so9btn = createButton(self,'Solenoid 9 Open',360,205,270,70,True,self.font2,self.so9_app,'icon.png',100,100)
+		self.sc8btn = createButton(self,'Solenoid 8 Close',660,130,270,70,False,self.font2,self.sc8_app,'icon.png',100,100)
+		self.sc9btn = createButton(self,'Solenoid 9 Close',660,205,270,70,False,self.font2,self.sc9_app,'icon.png',100,100)
+		self.so1btn = createButton(self,'Solenoid 1 Open',20,440,270,70,True,self.font2,self.so1_app,'icon.png',100,100)
+		self.so2btn = createButton(self,'Solenoid 2 Open',20,515,270,70,True,self.font2,self.so2_app,'icon.png',100,100)
+		self.so3btn = createButton(self,'Solenoid 3 Open',20,590,270,70,True,self.font2,self.so3_app,'icon.png',100,100)
+		self.so4btn = createButton(self,'Solenoid 4 Open',20,665,270,70,True,self.font2,self.so4_app,'icon.png',100,100)
+		self.so5btn = createButton(self,'Solenoid 5 Open',20,740,270,70,True,self.font2,self.so5_app,'icon.png',100,100)
+		self.so6btn = createButton(self,'Solenoid 6 Open',20,815,270,70,True,self.font2,self.so6_app,'icon.png',100,100)
+		self.so7btn = createButton(self,'Solenoid 7 Open',20,890,270,70,True,self.font2,self.so7_app,'icon.png',100,100)
+		self.sc1btn = createButton(self,'Solenoid 1 Close',300,440,270,70,False,self.font2,self.sc1_app,'icon.png',100,100)
+		self.sc2btn = createButton(self,'Solenoid 2 Close',300,515,270,70,False,self.font2,self.sc2_app,'icon.png',100,100)
+		self.sc3btn = createButton(self,'Solenoid 3 Close',300,590,270,70,False,self.font2,self.sc3_app,'icon.png',100,100)
+		self.sc4btn = createButton(self,'Solenoid 4 Close',300,665,270,70,False,self.font2,self.sc4_app,'icon.png',100,100)
+		self.sc5btn = createButton(self,'Solenoid 5 Close',300,740,270,70,False,self.font2,self.sc5_app,'icon.png',100,100)
+		self.sc6btn = createButton(self,'Solenoid 6 Close',300,815,270,70,False,self.font2,self.sc6_app,'icon.png',100,100)
+		self.sc7btn = createButton(self,'Solenoid 7 Close',300,890,270,70,False,self.font2,self.sc7_app,'icon.png',100,100)
 
 
 	def so1_app(self):
@@ -222,6 +230,27 @@ class Client(QMainWindow):
 			self.send_info('Ro6')
 		elif self.connection_status == False:
 			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+	def so7_app(self):
+		if self.connection_status == True:
+			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			logger.debug(" at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.send_info('Ro7')
+		elif self.connection_status == False:
+			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+	def so8_app(self):
+		if self.connection_status == True:
+			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			logger.debug(" at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.send_info('Ro8')
+		elif self.connection_status == False:
+			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+	def so9_app(self):
+		if self.connection_status == True:
+			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			logger.debug(" at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.send_info('Ro9')
+		elif self.connection_status == False:
+			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
 	def sc1_app(self):
 		if self.connection_status == True:
 			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
@@ -262,6 +291,27 @@ class Client(QMainWindow):
 			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
 			logger.debug(" at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
 			self.send_info('Rc6')
+		elif self.connection_status == False:
+			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+	def sc7_app(self):
+		if self.connection_status == True:
+			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			logger.debug(" at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.send_info('Rc7')
+		elif self.connection_status == False:
+			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+	def sc8_app(self):
+		if self.connection_status == True:
+			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			logger.debug(" at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.send_info('Rc8')
+		elif self.connection_status == False:
+			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+	def sc9_app(self):
+		if self.connection_status == True:
+			self.logTextBox.append("  >  !{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			logger.debug(" at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.send_info('Rc9')
 		elif self.connection_status == False:
 			QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
 
@@ -383,6 +433,24 @@ class Client(QMainWindow):
 		elif command == 'Rc6':
 			message = b'relay6_close'
 			logger.debug("relay6_close at {}".format(time.asctime()))
+		elif command == 'Ro7':
+			message = b'relay7_open'
+			logger.debug("relay7_open at {}".format(time.asctime()))
+		elif command == 'Rc7':
+			message = b'relay7_close'
+			logger.debug("relay7_close at {}".format(time.asctime()))
+		elif command == 'Ro8':
+			message = b'relay8_open'
+			logger.debug("relay8_open at {}".format(time.asctime()))
+		elif command == 'Rc8':
+			message = b'relay8_close'
+			logger.debug("relay8_close at {}".format(time.asctime()))
+		elif command == 'Ro9':
+			message = b'relay9_open'
+			logger.debug("relay9_open at {}".format(time.asctime()))
+		elif command == 'Rc9':
+			message = b'relay9_close'
+			logger.debug("relay9_close at {}".format(time.asctime()))
 
 		self.client.publish(self.TOPIC_1,message)
 
@@ -449,6 +517,36 @@ class Client(QMainWindow):
 			self.logTextBox.append("  >  Relay 6 OFF!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
 			self.so6btn.setEnabled(True)
 			self.sc6btn.setEnabled(False)
+		elif 'R7ON' in data:
+			logger.debug("Relay_7_ON at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.logTextBox.append("  >  Relay 7 ON!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			self.so7btn.setEnabled(False)
+			self.sc7btn.setEnabled(True)
+		elif 'R7OFF' in data:
+			logger.debug("Relay_7_OFF at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.logTextBox.append("  >  Relay 7 OFF!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			self.so7btn.setEnabled(True)
+			self.sc7btn.setEnabled(False)
+		elif 'R8ON' in data:
+			logger.debug("Relay_8_ON at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.logTextBox.append("  >  Relay 8 ON!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			self.so8btn.setEnabled(False)
+			self.sc8btn.setEnabled(True)
+		elif 'R8OFF' in data:
+			logger.debug("Relay_8_OFF at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.logTextBox.append("  >  Relay 8 OFF!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			self.so8btn.setEnabled(True)
+			self.sc8btn.setEnabled(False)
+		elif 'R9ON' in data:
+			logger.debug("Relay_9_ON at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.logTextBox.append("  >  Relay 9 ON!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			self.so9btn.setEnabled(False)
+			self.sc9btn.setEnabled(True)
+		elif 'R9OFF' in data:
+			logger.debug("Relay_9_OFF at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+			self.logTextBox.append("  >  Relay 9 OFF!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+			self.so9btn.setEnabled(True)
+			self.sc9btn.setEnabled(False)
 
 
 	def paintEvent(self, e):
@@ -466,10 +564,12 @@ class Client(QMainWindow):
 
 		pen = QPen(Qt.black, 4, Qt.SolidLine)
 		qp.setPen(pen)
-		qp.drawLine(self.testStandCenter+178, self.testStandDepth+30, self.testStandCenter+210, self.testStandDepth+10)
-		qp.drawLine(self.testStandCenter+210, self.testStandDepth+10, self.testStandCenter+420, self.testStandDepth+10)
-		qp.drawLine(self.testStandCenter-178, self.testStandDepth+30, self.testStandCenter-210, self.testStandDepth+10)
-		qp.drawLine(self.testStandCenter-210, self.testStandDepth+10, self.testStandCenter-420, self.testStandDepth+10)
+		qp.drawLine(20, 375, 950, 375)
+		#qp.drawLine(self.testStandCenter+178, self.testStandDepth+30, self.testStandCenter+210, self.testStandDepth+10)
+		#qp.drawLine(self.testStandCenter+210, self.testStandDepth+10, self.testStandCenter+420, self.testStandDepth+10)
+		#qp.drawLine(self.testStandCenter-178, self.testStandDepth+30, self.testStandCenter-210, self.testStandDepth+10)
+		#qp.drawLine(self.testStandCenter-210, self.testStandDepth+10, self.testStandCenter-420, self.testStandDepth+10)
+
 		#qp.drawLine(self.testStandCenter+178, self.testStandDepth+29, 950, 100)
 		#qp.drawLine(307.5, 260, 307.5, 730)
 

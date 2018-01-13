@@ -1,0 +1,43 @@
+DEBUG:root:Connection Successful at Thu Jan  4 15:33:04 2018
+DEBUG:root: at (15:33:04)
+DEBUG:root:relay1_open at Thu Jan  4 15:33:04 2018
+DEBUG:root:Relay_1_ON at (15:33:04)
+DEBUG:root: at (15:33:05)
+DEBUG:root:relay2_open at Thu Jan  4 15:33:05 2018
+DEBUG:root:Relay_2_ON at (15:33:05)
+DEBUG:root: at (15:33:05)
+DEBUG:root:relay3_open at Thu Jan  4 15:33:05 2018
+DEBUG:root:Relay_3_ON at (15:33:05)
+DEBUG:root: at (15:33:06)
+DEBUG:root:relay4_open at Thu Jan  4 15:33:06 2018
+DEBUG:root:Relay_4_ON at (15:33:06)
+DEBUG:root: at (15:33:07)
+DEBUG:root:relay5_open at Thu Jan  4 15:33:07 2018
+DEBUG:root:Relay_5_ON at (15:33:07)
+DEBUG:root: at (15:33:07)
+DEBUG:root:relay6_open at Thu Jan  4 15:33:07 2018
+DEBUG:root:Relay_6_ON at (15:33:07)
+DEBUG:root: at (15:33:08)
+DEBUG:root:relay6_close at Thu Jan  4 15:33:08 2018
+DEBUG:root:Relay_6_OFF at (15:33:08)
+DEBUG:root: at (15:33:09)
+DEBUG:root:relay5_close at Thu Jan  4 15:33:09 2018
+DEBUG:root:Relay_5_OFF at (15:33:09)
+DEBUG:root: at (15:33:09)
+DEBUG:root:relay3_close at Thu Jan  4 15:33:09 2018
+DEBUG:root:Relay_3_OFF at (15:33:09)
+DEBUG:root: at (15:33:10)
+DEBUG:root:relay1_close at Thu Jan  4 15:33:10 2018
+DEBUG:root:Relay_4_OFF at (15:33:10)
+DEBUG:root: at (15:33:11)
+DEBUG:root:relay2_close at Thu Jan  4 15:33:11 2018
+DEBUG:root:Relay_2_OFF at (15:33:11)
+DEBUG:root: at (15:33:11)
+DEBUG:root:relay1_close at Thu Jan  4 15:33:11 2018
+DEBUG:root:Relay_1_OFF at (15:33:11)
+DEBUG:root: at (15:33:22)
+DEBUG:root:relay6_open at Thu Jan  4 15:33:22 2018
+DEBUG:root:Relay_6_ON at (15:33:22)
+DEBUG:root: at (15:33:23)
+DEBUG:root:relay6_close at Thu Jan  4 15:33:23 2018
+DEBUG:root:Relay_6_OFF at (15:33:23)

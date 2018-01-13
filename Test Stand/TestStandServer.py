@@ -11,6 +11,7 @@ print ("Waiting to establish connection........ \n")
 
 def on_connect(client, userdata, flags, rc):
 	print("Connected with result code "+str(rc))
+	client.subscribe(TOPIC_1)
 	error = rc
 	return error
 
@@ -27,7 +28,6 @@ client.on_message = on_message
 #client.on_publish = on_publish
 client.on_disconnect = on_disconnect
 client.connect(HOST, 1883, 60)
-client.subscribe(TOPIC_1)
 
 print ("Connection established.")
 #print ('Connection address: ',addr)
@@ -52,73 +52,73 @@ print ("Awaiting commands... \n")
 def relay1_on():
 	RELAY.relayON(0,1)
 	print("Relay 1 ON")
-	client.publish(TOPIC_2,"Relay_1_ON.")
+	client.publish(TOPIC_2,b'R1ON')
 	return
 
 def relay2_on():
 	RELAY.relayON(0,2)
 	print("Relay 2 ON")
-	client.publish(TOPIC_2,b"Relay_2_ON.")
+	client.publish(TOPIC_2,b'R2ON')
 	return
 
 def relay3_on():
 	RELAY.relayON(0,3)
 	print("Relay 3 ON")
-	client.publish(TOPIC_2,b"Relay_3_ON.")
+	client.publish(TOPIC_2,b'R3ON')
 	return
 
 def relay4_on():
 	RELAY.relayON(0,4)
 	print("Relay 4 ON")
-	client.publish(TOPIC_2,b"Relay_4_ON.")
+	client.publish(TOPIC_2,b'R4ON')
 	return
 
 def relay5_on():
 	RELAY.relayON(0,5)
 	print("Relay 5 ON")
-	client.publish(TOPIC_2,b"Relay_5_ON.")
+	client.publish(TOPIC_2,b'R5ON')
 	return
 
 def relay6_on():
-	RELAY.relayON(0,6)
+	RELAY.relayON(1,6)
 	print("Relay 6 ON")
-	client.publish(TOPIC_2,b"Relay_6_ON.")
+	client.publish(TOPIC_2,b'R6ON')
 	return
 
 def relay1_off():
 	RELAY.relayOFF(0,1)
 	print("Relay 1 OFF")
-	client.publish(TOPIC_2,b"Relay_1_OFF.")
+	client.publish(TOPIC_2,b'R1OFF')
 	return
 
 def relay2_off():
 	RELAY.relayOFF(0,2)
 	print("Relay 2 OFF")
-	client.publish(TOPIC_2,b"Relay_2_OFF.")
+	client.publish(TOPIC_2,b'R2OFF')
 	return
 
 def relay3_off():
 	RELAY.relayOFF(0,3)
 	print("Relay 3 OFF")
-	client.publish(TOPIC_2,b"Relay_3_OFF.")
+	client.publish(TOPIC_2,b'R3OFF')
 	return
 
 def relay4_off():
 	RELAY.relayOFF(0,4)
 	print("Relay 4 OFF")
-	client.publish(TOPIC_2,b"Relay_4_OFF.")
+	client.publish(TOPIC_2,b'R4OFF')
 	return
 
 def relay5_off():
 	RELAY.relayOFF(0,5)
 	print("Relay 5 OFF")
-	client.publish(TOPIC_2,b"Relay_5_OFF.")
+	client.publish(TOPIC_2,b'R5OFF')
 	return
 
 def relay6_off():
-	RELAY.relayOFF(0,6)
+	RELAY.relayOFF(1,6)
 	print("Relay 6 OFF")
-	client.publish(TOPIC_2,b"Relay_6_OFF.")
+	client.publish(TOPIC_2,b'R6OFF')
 	return
 
 

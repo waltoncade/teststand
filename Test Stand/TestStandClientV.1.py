@@ -15,7 +15,7 @@ import paho.mqtt.client as mqtt
 
 #sets up a log file in the directory the program is in.
 logname = time.strftime("log/LC_ClientLog(%H_%M_%S).log", time.localtime())
-logger = logging.getLogger("")
+logger = logging.getLogger("1")
 logging.basicConfig(filename=logname, level=logging.DEBUG)
 
 class Client(QMainWindow):
@@ -106,7 +106,8 @@ class Client(QMainWindow):
 
 		self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT',0,25,500,50,20,True,self.paletteblack)
 		self.teststandlabel = createLabel(self, 'TEST STAND',0,73,300,50,20,True,self.paletteblack)
-		self.loadcelllabel = createLabel(self, '0',self.testStandCenter+150,self.testStandDepth+800,300,50,20,True,self.paletteblack)
+		self.loadcelllabel = createLabel(self, '0',self.testStandCenter-240,self.testStandDepth+840,300,50,26,False,self.paletteblack)
+		self.defineloadcell = createLabel(self, 'Load Cell Reading:',self.testStandCenter-600,self.testStandDepth+840,320,50,20,False,self.paletteblack)
 		self.valves = createLabel(self, 'Valves:',235,375,300,50,20,False,self.paletteblack)
 		self.breakwire = createLabel(self, 'BreakWire Reading: ',300,300,400,50,20,False,self.paletteblack)
 
@@ -390,6 +391,7 @@ class Client(QMainWindow):
 			self.voltlist.append(voltageRatio)
 			#print("VoltageRatio: %f" % voltageRatio)
 			self.loadcelllabel.setText((str(voltageRatio))[0:6])
+			logger.debug("                                                                                {} at {}".format(voltageRatio, time.asctime()))
 
 		self.ch.setOnDetachHandler(VoltageRatioInputDetached)
 		self.ch.setOnAttachHandler(VoltageRatioInputAttached)
@@ -617,6 +619,7 @@ class Client(QMainWindow):
 
 	def on_disconnect(client, userdata,rc=0):
 		self.logTextBox.append("  >  Connection Lost...{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+		self.connectionsymbol.setPixmap(QPixmap('pictures/pingred.png'))
 		self.client.loop_stop()
 
 	def on_message(self, client, userdata, msg):

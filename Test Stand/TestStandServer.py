@@ -86,19 +86,19 @@ def relay6_on():
 	return
 
 def relay7_on():
-	RELAY.relayON(1,1)
+	RELAY.relayON(0,7)
 	print("Relay 7 ON")
 	client.publish(TOPIC_2,b'R7ON')
 	return
 
 def relay8_on():
-	RELAY.relayON(1,2)
+	RELAY.relayON(1,1)
 	print("Relay 8 ON")
 	client.publish(TOPIC_2,b'R8ON')
 	return
 
 def relay9_on():
-	RELAY.relayON(1,3)
+	RELAY.relayON(1,2)
 	print("Relay 9 ON")
 	client.publish(TOPIC_2,b'R9ON')
 	return
@@ -134,25 +134,25 @@ def relay5_off():
 	return
 
 def relay6_off():
-	RELAY.relayOFF(1,6)
+	RELAY.relayOFF(0,6)
 	print("Relay 6 OFF")
 	client.publish(TOPIC_2,b'R6OFF')
 	return
 
 def relay7_off():
-	RELAY.relayOFF(1,1)
+	RELAY.relayOFF(0,7)
 	print("Relay 7 OFF")
 	client.publish(TOPIC_2,b'R7OFF')
 	return
 
 def relay8_off():
-	RELAY.relayOFF(1,2)
+	RELAY.relayOFF(1,1)
 	print("Relay 8 OFF")
 	client.publish(TOPIC_2,b'R8OFF')
 	return
 
 def relay9_off():
-	RELAY.relayOFF(1,3)
+	RELAY.relayOFF(1,2)
 	print("Relay 9 OFF")
 	client.publish(TOPIC_2,b'R9OFF')
 	return

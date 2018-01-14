@@ -1,7 +1,0 @@
-DEBUG:root:Connection Successful at Thu Jan  4 15:00:50 2018
-DEBUG:root: at (15:00:51)
-DEBUG:root:relay2_open at Thu Jan  4 15:00:51 2018
-DEBUG:root:Relay_2_ON at (15:00:51)
-DEBUG:root: at (15:00:51)
-DEBUG:root:relay2_close at Thu Jan  4 15:00:51 2018
-DEBUG:root:Relay_2_OFF at (15:00:51)
